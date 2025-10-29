@@ -6,11 +6,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable,HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -21,6 +22,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'tenant_id',
+        'parent_id',
+        'role_id',
     ];
 
     /**
@@ -46,6 +50,13 @@ class User extends Authenticatable
         ];
     }
 
+    public function createTenant(array $attributes = [])
+    {
+        $attributes['owner_id'] = $this->id;
+
+        return $this->tenant()->create($attributes);
+    }
+
     public function tenant()
     {
         return $this->belongsTo(Tenant::class);
@@ -66,8 +77,13 @@ class User extends Authenticatable
         return $this->hasMany(Expense::class, 'created_by');
     }
 
-     public function isAdmin(): bool
+    public function isAdmin(): bool
     {
         return $this->role?->name === 'Admin';
+    }
+
+    public function getRoleNamesAttribute(): ?string
+    {
+        return $this->role?->name;
     }
 }

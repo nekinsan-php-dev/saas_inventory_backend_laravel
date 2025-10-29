@@ -12,9 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->foreignId('tenant_id')->after('id')->constrained('tenants');
-            $table->foreignId('parent_id')->after('tenant_id')->nullable()->constrained('users');
-            $table->foreignId('role_id')->after('parent_id')->nullable()->constrained('roles');
+            $table->foreignId('tenant_id')->nullable()->after('id')->constrained('tenants');
+            $table->foreignId('parent_id')->nullable()->after('tenant_id')->constrained('users');
+            $table->foreignId('role_id')->nullable()->after('parent_id')->constrained('roles');
         });
     }
 

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('tenants', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('plan_id')->constrained('plans');
+            $table->foreignId('plan_id')->nullable()->constrained('plans');
             $table->foreignId('owner_id')->constrained('users');
             $table->timestamp('subscription_started_at')->nullable();
             $table->timestamp('subscription_ends_at')->nullable();
